@@ -4,7 +4,7 @@
 
 - **App 網址（Streamlit Community Cloud）**：`<<部署後填入>>`
 - **雲端驗收日期／結果**：`<<未測，部署並實測後填入>>`
-- **部署設定**：Repo `<<你的帳號/你的Repo>>`、分支 `main`、Main file path `Midterm Mini-Project/app.py`、Python `<<實際選的版本>>`
+- **部署設定**：Repo `a113222008-collab/115-1_AI-Generated-Applications`、分支 `main`、Main file path `Midterm Mini-Project/app.py`、Python `<<實際選的版本>>`
 
 ## 1. 使用者與問題
 
