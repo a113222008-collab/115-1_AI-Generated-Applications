@@ -1,0 +1,5 @@
+# 版本對齊 Repo 根目錄已驗證的清單（Python 3.14）；Pydantic 路線需要 pydantic
+streamlit==1.63.0
+openai==2.49.0
+pydantic>=2.7
+python-dotenv==1.2.3
