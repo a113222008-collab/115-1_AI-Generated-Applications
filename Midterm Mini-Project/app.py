@@ -44,6 +44,12 @@ def load_sample(filename: str) -> str:
     return path.read_text(encoding="utf-8") if path.exists() else ""
 
 
+def select_sample(filename: str) -> None:
+    st.session_state.notice_text = load_sample(filename)
+    st.session_state.record = None
+    st.session_state.error = None
+
+
 # ---------- 狀態 ----------
 st.session_state.setdefault("record", None)   # {"source": 原文, "data": dict}
 st.session_state.setdefault("error", None)    # str
@@ -60,9 +66,9 @@ with st.sidebar:
     st.subheader("載入虛構範例")
     c1, c2 = st.columns(2)
     if c1.button("完整公告", use_container_width=True):
-        st.session_state.notice_text = load_sample("normal.txt")
+        select_sample("normal.txt")
     if c2.button("資訊不足", use_container_width=True):
-        st.session_state.notice_text = load_sample("incomplete.txt")
+        select_sample("incomplete.txt")
     st.caption("範例皆為虛構資料。")
 
 # ---------- 主畫面 ----------

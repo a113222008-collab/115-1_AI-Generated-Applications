@@ -80,12 +80,14 @@ def get_model(secret_lookup: Callable[[str], str | None] | None = None) -> str:
             val = secret_lookup("OPENAI_MODEL")
         except Exception:
             val = None
-    return (val or os.getenv("OPENAI_MODEL") or DEFAULT_MODEL).strip()
+    return (val or os.getenv("OPENAI_MODEL") or DEFAULT_MODEL).strip() or DEFAULT_MODEL
 
 
-def check_result(data: dict[str, Any]) -> list[str]:
+def check_result(data: Any) -> list[str]:
     """回應檢查：欄位齊全、型別正確、字串非空。回傳問題清單（空＝通過）。"""
     problems: list[str] = []
+    if not isinstance(data, dict):
+        return ["回應格式不是物件"]
     expected = set(FIELD_LABELS)
     if set(data) != expected:
         problems.append(f"欄位不符：多 {sorted(set(data) - expected)}、缺 {sorted(expected - set(data))}")
@@ -130,7 +132,12 @@ def extract(client: Any, model: str, text: str) -> dict[str, Any]:
     if parsed is None:
         raise NoticeError("模型拒答或沒有回傳可解析的結構化結果，請調整原文後重試。")
 
-    data = parsed.model_dump()
+    if not isinstance(parsed, ClubNoticeResult):
+        raise NoticeError("模型回傳的結構化結果格式不符，結果不採用。")
+    try:
+        data = parsed.model_dump()
+    except Exception as exc:
+        raise NoticeError(f"結構化結果無法轉換（{type(exc).__name__}）：{exc}") from exc
     problems = check_result(data)
     if problems:
         raise NoticeError("回應未通過欄位檢查：" + "；".join(problems))

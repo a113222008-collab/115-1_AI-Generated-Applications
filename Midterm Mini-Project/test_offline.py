@@ -71,6 +71,8 @@ def main():
     t("未完成被擋", expect_error(lambda: extract(c, "m", "x")))
     c = FakeClient(SimpleNamespace(status="completed", output_parsed=None))
     t("拒答／無解析結果被擋", expect_error(lambda: extract(c, "m", "x")))
+    c = FakeClient(SimpleNamespace(status="completed", output_parsed={"event_name": "錯誤"}))
+    t("非 Pydantic 結果被擋", expect_error(lambda: extract(c, "m", "x")))
     c = FakeClient(raises=TimeoutError("模擬逾時"))
     t("服務例外被包成 NoticeError", expect_error(lambda: extract(c, "m", "x")))
     bad = ClubNoticeResult(event_name=" ", when_where="a", action_items=[], deadlines=[], missing_info=[])
@@ -84,6 +86,7 @@ def main():
     t("多餘欄位被抓", check_result(d2) != [])
     d3 = dict(d); d3["action_items"] = ["", "ok"]
     t("清單內空字串被抓", check_result(d3) != [])
+    t("非物件回應被抓", check_result(["錯誤"]) != [])
 
     # Schema：禁止多餘欄位
     schema = ClubNoticeResult.model_json_schema()
