@@ -92,7 +92,11 @@ if submitted:
 
     err = validate_input(text)
     if err:
-        st.session_state.error = err
+        st.session_state.error = (
+            f"離線檢查：{err}"
+            if not text.strip()
+            else err
+        )
     elif not api_enabled:
         st.session_state.error = "API 目前是關閉的：請先在左側開啟「啟用 OpenAI API」再送出。（本次 0 次請求）"
     else:
